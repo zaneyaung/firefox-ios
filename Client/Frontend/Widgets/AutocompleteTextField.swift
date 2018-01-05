@@ -34,7 +34,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
     }
 
     // This variable is a solution to get the right behavior for refocusing
-    // the AutocompleteTextField. The initial transition into Overlay Mode 
+    // the AutocompleteTextField. The initial transition into Overlay Mode
     // doesn't involve the user interacting with AutocompleteTextField.
     // Thus, we update shouldApplyCompletion in touchesBegin() to reflect whether
     // the highlight is active and then the text field is updated accordingly
@@ -72,7 +72,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
 
     fileprivate func commonInit() {
         super.delegate = self
-        super.addTarget(self, action: #selector(AutocompleteTextField.textDidChange), for: .editingChanged)
+        super.addTarget(self, action: #selector(textDidChange), for: .editingChanged)
         notifyTextChanged = debounce(0.1, action: {
             if self.isEditing {
                 self.autocompleteDelegate?.autocompleteTextField(self, didEnterText: self.normalizeString(self.text ?? ""))
@@ -82,8 +82,8 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
 
     override var keyCommands: [UIKeyCommand]? {
         return [
-            UIKeyCommand(input: UIKeyInputLeftArrow, modifierFlags: .init(rawValue: 0), action: #selector(self.handleKeyCommand(sender:))),
-            UIKeyCommand(input: UIKeyInputRightArrow, modifierFlags: .init(rawValue: 0), action: #selector(self.handleKeyCommand(sender:)))
+            UIKeyCommand(input: UIKeyInputLeftArrow, modifierFlags: [], action: #selector(handleKeyCommand)),
+            UIKeyCommand(input: UIKeyInputRightArrow, modifierFlags: [], action: #selector(handleKeyCommand))
         ]
     }
     
@@ -138,7 +138,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
     }
 
     fileprivate func normalizeString(_ string: String) -> String {
-        return string.lowercased().stringByTrimmingLeadingCharactersInSet(CharacterSet.whitespaces)
+        return string.lowercased().stringByTrimmingLeadingCharactersInSet(.whitespaces)
     }
 
     /// Commits the completion by setting the text and removing the highlight.
@@ -176,7 +176,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
         }
 
         let normalized = normalizeString(text)
-        guard suggestion.startsWith(normalized) && normalized.characters.count < suggestion.characters.count else {
+        guard suggestion.hasPrefix(normalized) && normalized.characters.count < suggestion.characters.count else {
             hideCursor = false
             return
         }
@@ -194,7 +194,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
     }
 
     override func caretRect(for position: UITextPosition) -> CGRect {
-        return hideCursor ? CGRect.zero : super.caretRect(for: position)
+        return hideCursor ? .zero : super.caretRect(for: position)
     }
 
     private func createAutocompleteLabelWith(_ autocompleteText: NSAttributedString) -> UILabel {
@@ -206,7 +206,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
         label.backgroundColor = self.backgroundColor
         label.textColor = self.textColor
 
-        let enteredTextSize = self.attributedText?.boundingRect(with: self.frame.size, options: NSStringDrawingOptions.usesLineFragmentOrigin, context: nil)
+        let enteredTextSize = self.attributedText?.boundingRect(with: self.frame.size, options: .usesLineFragmentOrigin, context: nil)
         frame.origin.x = (enteredTextSize?.width.rounded() ?? 0)
         frame.size.width = self.frame.size.width - frame.origin.x
         frame.size.height = self.frame.size.height - 1

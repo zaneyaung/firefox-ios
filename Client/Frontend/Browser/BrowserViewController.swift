@@ -2,7 +2,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import Foundation
 import Photos
 import UIKit
 import WebKit
@@ -85,7 +84,7 @@ class BrowserViewController: UIViewController {
     var header: UIView!
     var footer: UIView!
     fileprivate var topTouchArea: UIButton!
-    let urlBarTopTabsContainer = UIView(frame: CGRect.zero)
+    let urlBarTopTabsContainer = UIView(frame: .zero)
     var topTabsVisible: Bool {
         return topTabsViewController != nil
     }
@@ -294,7 +293,7 @@ class BrowserViewController: UIViewController {
     func SELappDidBecomeActiveNotification() {
         // Re-show any components that might have been hidden because they were being displayed
         // as part of a private mode tab
-        UIView.animate(withDuration: 0.2, delay: 0, options: UIViewAnimationOptions(), animations: {
+        UIView.animate(withDuration: 0.2, delay: 0, options: [], animations: {
             self.webViewContainer.alpha = 1
             self.urlBar.locationContainer.alpha = 1
             self.topTabsViewController?.switchForegroundStatus(isInForeground: true)
@@ -816,7 +815,7 @@ class BrowserViewController: UIViewController {
         }
         QuickActions.sharedInstance.addDynamicApplicationShortcutItemOfType(.openLastBookmark,
             withUserData: userData,
-            toApplication: UIApplication.shared)
+            toApplication: .shared)
     }
 
     override func accessibilityPerformEscape() -> Bool {
@@ -914,10 +913,10 @@ class BrowserViewController: UIViewController {
         if let url = tab.url {
             if url.isReaderModeURL {
                 showReaderModeBar(animated: false)
-                NotificationCenter.default.addObserver(self, selector: #selector(SELDynamicFontChanged), name: NotificationDynamicFontChanged, object: nil)
+                NotificationCenter.default.addObserver(self, selector: #selector(SELDynamicFontChanged), name: .DynamicFontChanged, object: nil)
             } else {
                 hideReaderModeBar(animated: false)
-                NotificationCenter.default.removeObserver(self, name: NotificationDynamicFontChanged, object: nil)
+                NotificationCenter.default.removeObserver(self, name: .DynamicFontChanged, object: nil)
             }
 
             updateInContentHomePanel(url as URL)
@@ -1093,7 +1092,7 @@ class BrowserViewController: UIViewController {
             info["visitType"] = visitType
         }
         info["isPrivate"] = tab.isPrivate
-        notificationCenter.post(name: NotificationOnLocationChange, object: self, userInfo: info)
+        notificationCenter.post(name: .OnLocationChange, object: self, userInfo: info)
     }
 
     func navigateInTab(tab: Tab, to navigation: WKNavigation? = nil) {
@@ -1383,7 +1382,7 @@ extension BrowserViewController: URLBarDelegate {
         if let selectedTab = tabManager.selectedTab {
             // Only scroll to top if we are not showing the home view controller
             if homePanelController == nil {
-                selectedTab.webView?.scrollView.setContentOffset(CGPoint.zero, animated: true)
+                selectedTab.webView?.scrollView.setContentOffset(.zero, animated: true)
             }
         }
     }
@@ -1411,7 +1410,7 @@ extension BrowserViewController: URLBarDelegate {
         }
 
         // We couldn't build a URL, so check for a matching search keyword.
-        let trimmedText = text.trimmingCharacters(in: CharacterSet.whitespaces)
+        let trimmedText = text.trimmingCharacters(in: .whitespaces)
         guard let possibleKeywordQuerySeparatorSpace = trimmedText.characters.index(of: " ") else {
             submitSearchText(text)
             return
@@ -1422,7 +1421,7 @@ extension BrowserViewController: URLBarDelegate {
 
         profile.bookmarks.getURLForKeywordSearch(possibleKeyword).uponQueue(.main) { result in
             if var urlString = result.successValue,
-                let escapedQuery = possibleQuery.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed),
+                let escapedQuery = possibleQuery.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
                 let range = urlString.range(of: "%s") {
                 urlString.replaceSubrange(range, with: escapedQuery)
 
@@ -2115,7 +2114,7 @@ extension BrowserViewController {
 
     func showReaderModeBar(animated: Bool) {
         if self.readerModeBar == nil {
-            let readerModeBar = ReaderModeBarView(frame: CGRect.zero)
+            let readerModeBar = ReaderModeBarView(frame: .zero)
             readerModeBar.delegate = self
             view.insertSubview(readerModeBar, belowSubview: header)
             self.readerModeBar = readerModeBar
@@ -2195,7 +2194,7 @@ extension BrowserViewController {
     }
 
     func SELDynamicFontChanged(_ notification: Notification) {
-        guard notification.name == NotificationDynamicFontChanged else { return }
+        guard notification.name == .DynamicFontChanged else { return }
 
         var readerModeStyle = DefaultReaderModeStyle
         if let dict = profile.prefs.dictionaryForKey(ReaderModeProfileKeyStyle) {
@@ -2378,7 +2377,7 @@ extension BrowserViewController: ContextMenuHelperDelegate {
         // state (e.g., long pressing a link before the document changes, then releasing after a
         // different page loads).
         let touchPoint = gestureRecognizer.location(in: view)
-        guard touchPoint != CGPoint.zero else { return }
+        guard touchPoint != .zero else { return }
 
         let touchSize = CGSize(width: 0, height: 16)
 
@@ -2496,14 +2495,14 @@ extension BrowserViewController: ContextMenuHelperDelegate {
         }
 
         actionSheetController.title = dialogTitle?.ellipsize(maxLength: ActionSheetTitleMaxLength)
-        let cancelAction = UIAlertAction(title: Strings.CancelString, style: UIAlertActionStyle.cancel, handler: nil)
+        let cancelAction = UIAlertAction(title: Strings.CancelString, style: .cancel, handler: nil)
         actionSheetController.addAction(cancelAction)
         self.present(actionSheetController, animated: true, completion: nil)
     }
 
     fileprivate func getImage(_ url: URL, success: @escaping (UIImage) -> Void) {
         Alamofire.request(url).validate(statusCode: 200..<300).response { response in
-            if let data = response.data, let image = UIImage.dataIsGIF(data) ? UIImage.imageFromGIFDataThreadSafe(data) : UIImage.imageFromDataThreadSafe(data) {
+            if let data = response.data, let image = data.isGif ? UIImage.imageFromGIFDataThreadSafe(data) : UIImage.imageFromDataThreadSafe(data) {
                 success(image)
             }
         }
@@ -2618,7 +2617,7 @@ extension BrowserViewController {
     func addSearchEngine(_ searchQuery: String, favicon: Favicon) {
         guard searchQuery != "",
             let iconURL = URL(string: favicon.url),
-            let url = URL(string: searchQuery.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlFragmentAllowed)!),
+            let url = URL(string: searchQuery.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)!),
             let shortName = url.domainURL.host else {
                 let alert = ThirdPartySearchAlerts.failedToAddThirdPartySearch()
                 self.present(alert, animated: true, completion: nil)

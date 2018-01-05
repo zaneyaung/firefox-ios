@@ -140,7 +140,7 @@ class SearchEngines {
             }
             return disabledEngineDict
         } else {
-            return [String: Bool]()
+            return [:]
         }
     }
 
