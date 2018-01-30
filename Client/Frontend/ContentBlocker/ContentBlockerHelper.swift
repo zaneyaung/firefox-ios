@@ -140,7 +140,6 @@ class ContentBlockerHelper {
             // Convert array to a Set()
             ContentBlockerHelper.whitelistedDomains = Set(list.map { $0 })
         }
-        Profiler.begin(bookend: .load_trackingprotection_lists)
 
         removeOldListsByDateFromStore() {
             self.removeOldListsByNameFromStore() {
@@ -151,7 +150,6 @@ class ContentBlockerHelper {
                 }
 =======
                 self.compileListsNotInStore(completion: {
-                    Profiler.end(bookend: .load_trackingprotection_lists)
                 })
 >>>>>>> Add nimbledroid profile for tracking protection loading
             }
