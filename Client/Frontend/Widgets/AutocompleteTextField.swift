@@ -89,10 +89,6 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
         ]
     }
 
-    func handleNonTextualKeyCommand(sender: UIKeyCommand) {
-        
-    }
-
     func handleKeyCommand(sender: UIKeyCommand) {
         switch sender.input {
         case UIKeyInputLeftArrow:
