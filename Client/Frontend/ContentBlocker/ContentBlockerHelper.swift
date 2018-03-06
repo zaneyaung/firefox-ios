@@ -143,15 +143,10 @@ class ContentBlockerHelper {
 
         removeOldListsByDateFromStore() {
             self.removeOldListsByNameFromStore() {
-<<<<<<< HEAD
                 self.compileListsNotInStore{
                     ContentBlockerHelper.heavyInitHasRunOnce = true
                     self.addActiveRulesToTab()
                 }
-=======
-                self.compileListsNotInStore(completion: {
-                })
->>>>>>> Add nimbledroid profile for tracking protection loading
             }
         }
 
